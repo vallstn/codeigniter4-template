@@ -4,9 +4,9 @@ namespace CodeIgniter\Shield\Language\en;
 
 return [
     // Exceptions
-    'unknownAuthenticator'  => '{0} சரியான அங்கீகாரம் இல்லை.',
-    'unknownUserProvider'   => 'பயன்படுத்த வேண்டிய பயனர் வழங்குநரைத் தீர்மானிக்க முடியவில்லை.',
-    'invalidUser'           => 'குறிப்பிட்ட பயனரைக் கண்டறிய முடியவில்லை.',
+    'unknownAuthenticator'  => '{0} is not a valid authenticator.',
+    'unknownUserProvider'   => 'Unable to determine the User Provider to use.',
+    'invalidUser'           => 'Unable to locate the specified user.',
     'badAttempt'            => 'Unable to log you in. Please check your credentials.',
     'noPassword'            => 'Cannot validate a user without a password.',
     'invalidPassword'       => 'Unable to log you in. Please check your password.',
@@ -18,35 +18,35 @@ return [
     'unableSendEmailToUser' => 'Sorry, there was a problem sending the email. We could not send an email to "{0}".',
     'throttled'             => 'Too many requests made from this IP address. You may try again in {0} seconds.',
 
-    'identity'        => 'மின்னஞ்சல் முகவரி  / அடையாள பெயர்',
-	'email'           => 'மின்னஞ்சல் முகவரி ',
-    'username'        => 'அடையாள பெயர்',
-    'password'        => 'கடவுச்சொல்',
-    'passwordConfirm' => 'கடவுச்சொல் (மீண்டும் )',
-    'haveAccount'     => 'ஏற்கனவே ஒரு கணக்கு உள்ளதா?',
+    'identity'           => 'Email Address/Username',
+    'email'           => 'Email Address',
+    'username'        => 'Username',
+    'password'        => 'Password',
+    'passwordConfirm' => 'Password (again)',
+    'haveAccount'     => 'Already have an account?',
 
     // Buttons
-    'confirm' => 'உறுதிப்படுத்தவும்',
-    'send'    => 'அனுப்பு',
+    'confirm' => 'Confirm',
+    'send'    => 'Send',
 
     // Registration
-    'register'         => 'பதிவு',
-    'registerDisabled' => 'தற்போது பதிவு செய்ய அனுமதி இல்லை.',
-    'registerSuccess'  => 'பதிவு நிறைவு பெற்றது !',
+    'register'         => 'Register',
+    'registerDisabled' => 'Registration is not currently allowed.',
+    'registerSuccess'  => 'Welcome aboard!',
 
     // Login
-    'login'              => 'லாகின்',
-    'needAccount'        => 'விவசாயி பதிவிற்கு?',
-    'rememberMe'         => 'நினைவில் வைக்கவும் ?',
-    'forgotPassword'     => 'கடவு சொல் மறந்து விட்டதா?',
-    'useMagicLink'       => 'உங்கள் மின்னஞ்சலை உள்ளிடவும், ',
+    'login'              => 'Login',
+    'needAccount'        => 'Need an account?',
+    'rememberMe'         => 'Remember me?',
+    'forgotPassword'     => 'Forgot your password?',
+    'useMagicLink'       => 'Use a Login Link',
     'magicLinkSubject'   => 'Your Login Link',
     'magicTokenNotFound' => 'Unable to verify the link.',
     'magicLinkExpired'   => 'Sorry, link has expired.',
     'checkYourEmail'     => 'Check your email!',
     'magicLinkDetails'   => 'We just sent you an email with a Login link inside. It is only valid for {0} minutes.',
     'successLogout'      => 'You have successfully logged out.',
-	'captcha'      		 => 'படத்தில் காணும் எண்களை உள்ளீடு செய்யவும் .',
+    'captcha'      		 => 'Enter the Numbers Shown in Picture.',
 
     // Passwords
     'errorPasswordLength'       => 'Passwords must be at least {0, number} characters long.',
@@ -88,6 +88,4 @@ return [
 
     // Permissions
     'unknownPermission' => '{0} is not a valid permission.',
-	
-	
 ];
