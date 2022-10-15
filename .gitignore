@@ -63,6 +63,7 @@ writable/uploads/*
 writable/debugbar/*
 
 writable/captcha/*
+!writable/captcha/index.html
 
 php_errors.log
 

@@ -33,16 +33,16 @@ class LoginController extends ShieldLogins
     {
 		$salt = random_string('alnum', 32);
 		$this->session->set('salt', $salt);
-		
-		/** If need to use SimpleCaptcha use the following Code
+
+        /** If need to use SimpleCaptcha use the following Code
 		$vals = [
 			'word'      => random_string('numeric', 8),
-			'img_path'  => '.captcha/',
-			'img_url'   => base_url() . '/captcha/',
+			'img_path'  => WRITEPATH.'/captcha/',
+			'img_url'   => '/captcha/',
 		];
-		$cap = Captcha::createCaptcha($vals);
-		**/
-		
+		$cap = createCaptcha($vals);
+         **/
+
 		//Create Captcha using Codeigniter 3 Library and store the parameters in Dtabase / pass "id" in session		
 		$vals = array(
 				'word'          => random_string('numeric', 8),
@@ -65,7 +65,6 @@ class LoginController extends ShieldLogins
 						'grid'		=> array(255,182,182)
 				)
 		);
-		
 		$cap = create_captcha($vals);
 		
 		$data = array(
