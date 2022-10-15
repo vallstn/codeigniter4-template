@@ -1,0 +1,19 @@
+Assets
+Auth
+AuthGroups
+Bonfire
+Site
+Themes
+Users
+
+Publishing config files
+  Created: APPPATH\Config/Assets.php
+  Created: APPPATH\Config/Auth.php
+  Created: APPPATH\Config/AuthGroups.php
+  Created: APPPATH\Config/Bonfire.php
+  Created: APPPATH\Config/Site.php
+  Created: APPPATH\Config/Themes.php
+  Created: APPPATH\Config/Consent.php
+  Created: APPPATH\Config/Dashboard.php
+  Created: APPPATH\Config/Recycler.php
+  Created: APPPATH\Config/Users.php
