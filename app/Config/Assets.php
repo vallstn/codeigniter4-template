@@ -63,6 +63,6 @@ class Assets extends BonfireAssets
         'app'   => ROOTPATH . '/themes/App',
         'admin' => ROOTPATH . '/themes/Admin',
         'auth'  => ROOTPATH . '/themes/Auth',
-        'other' => VENDORPATH . '/components',
+        'other' => ROOTPATH . '/themes/Public/components',
     ];
 }

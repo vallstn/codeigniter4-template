@@ -1,5 +1,4 @@
 <?= $this->extend(setting('Auth.views')['email_layout']) ?>
-
 <?= $this->section('message') ?>
 
 <p>
