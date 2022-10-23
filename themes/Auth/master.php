@@ -1,14 +1,23 @@
 <!doctype html>
-<html lang="en"><head>
-	<?= $viewMeta->render('meta') ?>
-    <?= $viewMeta->render('title') ?>
-    <?= asset_link('other/theme/css/tabler.css', 'css') ?>
-    <?= asset_link('other/theme/inter.css', 'css') ?>
-	<?= asset_link('other/theme/app.css', 'css') ?>
-    <?= asset_link('other/theme/js/theme.js', 'js') ?>
-    <?= $this->renderSection('styles') ?>
-    <?= $viewMeta->render('style') ?>
-</head>
+<html lang="en">
+	<head>
+		<meta charset="utf-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+		<meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+		<?= $viewMeta->render('meta') ?>
+		<?= $viewMeta->render('title') ?>
+		<?= asset_link('other/theme/css/tabler.css', 'css') ?>
+		<?= asset_link('other/theme/inter.css', 'css') ?>
+		<?= asset_link('other/theme/app.css', 'css') ?>
+		<?= asset_link('other/theme/js/theme.js', 'js') ?>
+		<?= $this->renderSection('styles') ?>
+		<?= $viewMeta->render('style') ?>
+		<style>
+		  :root {
+			--tblr-font-sans-serif: Inter, -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif;
+		  }
+		</style>
+	</head>
 <body  class="d-flex flex-column bg-white">
     <div class="row g-0 flex-fill">
 	

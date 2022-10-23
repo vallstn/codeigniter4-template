@@ -6,6 +6,23 @@ use CodeIgniter\Config\BaseConfig;
 
 class Portal extends BaseConfig
 {
+	public array $views = [
+        'layout'                      => 'master',
+        'email_layout'                => '\App\Views\email.php',
+        'login'                       => '\App\Views\Auth\login',
+        'register'                    => '\App\Views\Auth\register',
+        'forgotPassword'              => '\App\Views\forgot_password',
+        'resetPassword'               => '\App\Views\reset_password',
+        'action_email_2fa'            => '\App\Views\email_2fa_show',
+        'action_email_2fa_verify'     => '\App\Views\email_2fa_verify',
+        'action_email_2fa_email'      => '\App\Views\email_2fa_email',
+        'action_email_activate_email' => '\App\Views\email_activate_email',
+        'action_email_activate_show'  => '\App\Views\email_activate_show',
+        'magic-link-login'            => '\App\Views\Auth\magic_link_form',
+        'magic-link-message'          => '\App\Views\Auth\magic_link_message',
+        'magic-link-email'            => '\App\Views\Auth\magic_link_email',
+    ];
+	
     /**
      * --------------------------------------------------------------------------
      * Gravatar
