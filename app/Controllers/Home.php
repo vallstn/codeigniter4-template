@@ -12,10 +12,10 @@ class Home extends BaseController
 		
 		$user = auth()->user();
 		
-		print_r($user); die;
+		//print_r($user); die;
 
-        if ( $user->inGroup('user')) {
-            return redirect()->to('/Portal/home');
+        if ( $user->inGroup('public')) {
+            return redirect()->to('/public/home');
         }
 
         return view('welcome_message');
