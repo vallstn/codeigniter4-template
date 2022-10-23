@@ -33,32 +33,17 @@ class LoginController extends ShieldLogins
     {
 		$salt = random_string('alnum', 32);
 		$this->session->set('salt', $salt);
-
-        // Use Either Simple Captcha or Codeigniter 3 Captcha by commenting out required code
-        // For SimpleCaptcha use the following Code
-        $word = random_string('numeric', 4);
-
-		$valss = [
-			'word'      => $word,
-			'img_path'  => WRITEPATH.'/captcha/',
-			'img_url'   => '/captcha/',
+		
+		/** If need to use SimpleCaptcha use the following Code
+		$vals = [
+			'word'      => random_string('numeric', 8),
+			'img_path'  => '.captcha/',
+			'img_url'   => base_url() . '/captcha/',
 		];
-		$capp = createCaptcha($valss);
-
-        $dataa = array(
-            'captcha_id'   => '',
-            'captcha_time'  => $capp['time'],
-            'ip_address'    => self::getClientIpAddress(),
-            'word'          => $word,
-            'imgName'       => $capp['filename']
-        );
-        $insert_id = $this->captchaModel->insert($dataa);
-
-        $this->session->set('captcha_id', $insert_id);
-        $this->session->set('image', $capp['image']);
-
-        /**
-		//Create Captcha using Codeigniter 3 Library and store the parameters in Database / pass "id" in session
+		$cap = Captcha::createCaptcha($vals);
+		**/
+		
+		//Create Captcha using Codeigniter 3 Library and store the parameters in Dtabase / pass "id" in session		
 		$vals = array(
 				'word'          => random_string('numeric', 8),
 				'img_path'      => WRITEPATH.'/captcha/',
@@ -80,6 +65,7 @@ class LoginController extends ShieldLogins
 						'grid'		=> array(255,182,182)
 				)
 		);
+		
 		$cap = create_captcha($vals);
 
 		$data = array(
