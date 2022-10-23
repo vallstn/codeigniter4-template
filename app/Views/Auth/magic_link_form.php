@@ -1,34 +1,23 @@
 <?= $this->extend(config('Auth')->views['layout']) ?>
-
 <?= $this->section('title') ?><?= lang('Auth.useMagicLink') ?> <?= $this->endSection() ?>
-
 <?= $this->section('main') ?>
 
-<x-unsplash>
-    <div class="container d-flex justify-content-center p-5">
-        <x-auth-card>
-            <div class="card-body">
-                <h5 class="card-title mb-4"><?= lang('Auth.useMagicLink') ?></h5>
-
-                <form action="<?= route_to('magic-link') ?>" method="post">
-                    <?= csrf_field() ?>
-
-                    <p class="text-muted mb-4"><?= lang('Bonfire.magicLinkInfo') ?></p>
-
-                    <!-- Email -->
-                    <div class="mb-5">
-                        <input type="email" class="form-control" name="email" autocomplete="email" placeholder="<?= lang('Auth.email') ?>"
-                            value="<?= old('email', auth()->user()->email ?? null) ?>" required />
-                    </div>
-
-                    <div class="d-grid col-8 mx-auto m-3">
-                        <button type="submit" class="btn btn-primary btn-block"><?= lang('Auth.useMagicLink') ?></button>
-                    </div>
-
-                </form>
-            </div>
-        </x-auth-card>
+<div class="container container-tight my-5 px-lg-5">
+    <div class="text-center mb-4">
+        <a href="." class="navbar-brand navbar-brand-autodark"><img src="<?=base_url("resource/favicon.ico")?>" height="66" alt=""></a>
+        <br/><?= lang('Bonfire.magicLinkInfo') ?>
     </div>
-</x-unsplash>
+    <form action="<?= route_to('magic-link') ?>" method="post" autocomplete="off" novalidate>
+        <?= csrf_field() ?>
+        <!-- Email -->
+        <div class="mb-3">
+            <input type="email" class="form-control" name="email" autocomplete="email" placeholder="<?= lang('Auth.email') ?>"
+                   value="<?= old('email', auth()->user()->email ?? null) ?>" required />
+        </div>
+        <div class="form-footer">
+            <button type="submit" class="btn btn-primary w-100"><?= lang('Auth.useMagicLink') ?></button>
+        </div>
+    </form>
+</div>
 
 <?= $this->endSection() ?>

@@ -31,15 +31,11 @@ $routes->group('', ['namespace' => 'App\Controllers\Auth'], static function ($ro
     $routes->get('login/magic-link', 'MagicLinkController::loginView', ['as' => 'magic-link']);
     $routes->post('login/magic-link', 'MagicLinkController::loginAction');
     $routes->get('login/verify-magic-link', 'MagicLinkController::verify', ['as' => 'verify-magic-link']);
-	$routes->match(['get', 'post'], 'captcha/(:segment)', 'LoginController::captcha/$1');
+	$routes->get('captcha/(:segment)', 'LoginController::captcha/$1');
+    $routes->get('resource/(:segment)', 'LoginController::resource/$1');
 });
 
 service('auth')->routes($routes, ['except' => ['login', 'register']]);
-
-$routes->group('revenueMaster', ['namespace' => 'Dashboard\RevDB\Controllers'], static function ($routes) {
-    $routes->get('district', 'RevenueMasterController::index', ['as' => 'district']);
-    $routes->post('district', 'RevenueMasterController::saveIndex');
-});
 
 /*
  * --------------------------------------------------------------------

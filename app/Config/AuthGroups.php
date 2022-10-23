@@ -12,7 +12,7 @@ class AuthGroups extends ShieldGroups
      * --------------------------------------------------------------------
      * The group that a newly registered user is added to.
      */
-    public string $defaultGroup = 'user';
+    public string $defaultGroup = 'public';
 
     /**
      * --------------------------------------------------------------------
@@ -32,17 +32,37 @@ class AuthGroups extends ShieldGroups
             'title'       => 'Admin',
             'description' => 'Day to day administrators of the site.',
         ],
-        'developer' => [
-            'title'       => 'Developer',
-            'description' => 'Site programmers.',
+        'genmanager' => [
+            'title'       => 'General manager',
+            'description' => 'Administrative Head at State / Country Level.',
+        ],
+        'regmanager' => [
+            'title'       => 'Regional manager',
+            'description' => 'Administrative Head at Regional Level.',
+        ],
+        'divmanager' => [
+            'title'       => 'Divisional manager',
+            'description' => 'Administrative Head at Divisional Level.',
+        ],
+        'manager' => [
+            'title'       => 'Divisional manager',
+            'description' => 'Administrative Head at Sub-Divisional Level.',
+        ],
+        'training' => [
+            'title'       => 'Official - Training Centre',
+            'description' => 'Training Centre Officials.',
+        ],
+        'workshop' => [
+            'title'       => 'Official - Workshop',
+            'description' => 'Workshop Officials.',
         ],
         'user' => [
             'title'       => 'User',
-            'description' => 'General users of the site. Often customers.',
+            'description' => 'General users of the site.',
         ],
-        'beta' => [
-            'title'       => 'Beta User',
-            'description' => 'Has access to beta-level features.',
+        'public' => [
+            'title'       => 'Public User',
+            'description' => 'Has access to PublicUser Website and Limited features.',
         ],
     ];
 
@@ -107,24 +127,29 @@ class AuthGroups extends ShieldGroups
             'consent.*',
             'logs.view',
         ],
-        'developer' => [
-            'admin.access',
-            'admin.settings',
-            'users.list',
-            'users.create',
-            'users.edit',
-            'users.settings',
-            'groups.settings',
-            'beta.*',
-            'site.viewOffline',
-            'widgets.*',
-            'consent.*',
-            'recycler.*',
-            'logs.*',
+        'genmanager' => [
+            'public.access',
         ],
-        'user' => [],
-        'beta' => [
-            'beta.access',
+        'regmanager' => [
+            'public.access',
+        ],
+        'divmanager' => [
+            'public.access',
+        ],
+        'manager' => [
+            'public.access',
+        ],
+        'training' => [
+            'public.access',
+        ],
+        'workshop' => [
+            'public.access',
+        ],
+        'user' => [
+            'public.access',
+        ],
+        'public' => [
+            'public.access',
         ],
     ];
 }

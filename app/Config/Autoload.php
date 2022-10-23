@@ -45,6 +45,7 @@ class Autoload extends AutoloadConfig
         'Config'      => APPPATH . 'Config',
 		'Dashboard' => APPPATH .'Modules',
         'Dashboard/RevDB' => APPPATH .'Modules/RevDB',
+		'Dashboard/Portal' => APPPATH .'Modules/Portal',
     ];
 
     /**

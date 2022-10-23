@@ -14,14 +14,14 @@ use Nullix\CryptoJsAes\CryptoJsAes;
 class LoginController extends ShieldLogins
 {
     use Themeable;
-	protected $captchaModel; 
+	protected $captchaModel;
 
     public function __construct()
     {
         $this->theme = 'Auth';
 		helper(['auth', 'text', 'captcha']);
 		$this->session = service('session');
-		
+
 		$this->captchaModel = new CaptchaModel();
 		$this->db = \Config\Database::connect();
     }
@@ -34,16 +34,31 @@ class LoginController extends ShieldLogins
 		$salt = random_string('alnum', 32);
 		$this->session->set('salt', $salt);
 
-        /** If need to use SimpleCaptcha use the following Code
-		$vals = [
-			'word'      => random_string('numeric', 8),
+        // Use Either Simple Captcha or Codeigniter 3 Captcha by commenting out required code
+        // For SimpleCaptcha use the following Code
+        $word = random_string('numeric', 4);
+
+		$valss = [
+			'word'      => $word,
 			'img_path'  => WRITEPATH.'/captcha/',
 			'img_url'   => '/captcha/',
 		];
-		$cap = createCaptcha($vals);
-         **/
+		$capp = createCaptcha($valss);
 
-		//Create Captcha using Codeigniter 3 Library and store the parameters in Dtabase / pass "id" in session		
+        $dataa = array(
+            'captcha_id'   => '',
+            'captcha_time'  => $capp['time'],
+            'ip_address'    => self::getClientIpAddress(),
+            'word'          => $word,
+            'imgName'       => $capp['filename']
+        );
+        $insert_id = $this->captchaModel->insert($dataa);
+
+        $this->session->set('captcha_id', $insert_id);
+        $this->session->set('image', $capp['image']);
+
+        /**
+		//Create Captcha using Codeigniter 3 Library and store the parameters in Database / pass "id" in session
 		$vals = array(
 				'word'          => random_string('numeric', 8),
 				'img_path'      => WRITEPATH.'/captcha/',
@@ -66,7 +81,7 @@ class LoginController extends ShieldLogins
 				)
 		);
 		$cap = create_captcha($vals);
-		
+
 		$data = array(
 			'captcha_id'   => '',
 			'captcha_time'  => $cap['time'],
@@ -74,16 +89,17 @@ class LoginController extends ShieldLogins
 			'word'          => $cap['word'],
 			'imgName'       => $cap['time']
 		);
-		$insert_id = $this->captchaModel->insert($data);			
-		
-		$this->session->set('captcha_id', $insert_id);
-		$this->session->set('image', $cap['image']);
-		
+		$insert_id = $this->captchaModel->insert($data);
+
+        $this->session->set('captcha_id', $insert_id);
+        $this->session->set('image', $cap['image']);
+        **/
+
         return $this->render(config('Auth')->views['login'], [
             'allowRemember' => setting('Auth.sessionConfig')['allowRemembering'],
         ]);
     }
-	
+
 	/**
      * Attempts to log the user in.
      */
@@ -91,27 +107,27 @@ class LoginController extends ShieldLogins
     {
 		// First, delete old captchas
 		$expiration = time() - 3600; // One hour limit
-		
+
 		$builder = $this->db->table('captcha');
 		$builder->select('imgName');
 		$builder->where('captcha_time < ', $expiration);
 		$filter = $builder->get();
-		
+
 		foreach ($filter->getResult() as $row) {
-			
+
 			$image = WRITEPATH.'/captcha/'.$row->imgName.'.jpg';
 			if(file_exists($image))
 			{
 			   unlink(WRITEPATH."/captcha/".$row->imgName.".jpg");
 			}
-			
-		}		
+
+		}
 		$this->captchaModel->where('captcha_time < ', $expiration)->delete();
-		
+
 		// Check Captcha. If Captcha wrong return to login.
 		$captcha_id = $this->request->getPost('captcha_id');
 		$captchaData = $this->captchaModel->find($captcha_id);
-		
+
 		$captcha = $this->request->getPost('captcha');
 		$ip_address = self::getClientIpAddress();
 
@@ -119,37 +135,37 @@ class LoginController extends ShieldLogins
 		{
 			return redirect()->route('login')->withInput()->with('error', 'You must submit the word that appears in the image.');
 		}
-		
+
 		$image = WRITEPATH.'/captcha/'.$captchaData->imgName.'.jpg';
 		if(file_exists($image))
 		{
 		   unlink(WRITEPATH."/captcha/".$captchaData->imgName.".jpg");
 		}
-		$this->captchaModel->where('captcha_id', $captcha_id)->delete();		
-		
+		$this->captchaModel->where('captcha_id', $captcha_id)->delete();
+
 		// Determine credential type
 		$identity = $this->request->getPost('identity');
-		$loginidentity = filter_var($identity, FILTER_VALIDATE_EMAIL) ? 'email' :  'username';			
-		
+		$loginidentity = filter_var($identity, FILTER_VALIDATE_EMAIL) ? 'email' :  'username';
+
         // Validate here first, since some things,
         // like the password, can only be validated properly here.
 		if ($loginidentity == 'email') {
             $rules = $this->getValidationRulesEmail();
         } else {
             $rules = $this->getValidationRulesUsername();
-        }   
+        }
 
         if (! $this->validate($rules)) {
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
-		
-		$credentials[$loginidentity]             = $this->request->getPost('identity');		
-		
+
+		$credentials[$loginidentity]             = $this->request->getPost('identity');
+
         $encoded = $this->request->getPost('password');
 		$passhash = $this->request->getPost('salt');
 		if ($passhash == "") $passhash = "1234";
 		$credentials['password'] = CryptoJsAes::decrypt($encoded, $passhash);
-		
+
         $remember                = (bool) $this->request->getPost('remember');
 
         // Attempt to login
@@ -171,7 +187,7 @@ class LoginController extends ShieldLogins
 
         return redirect()->to(config('Auth')->loginRedirect())->withCookies();
     }
-	
+
 	/**
      * Returns the rules that should be used for validation.
      *
@@ -184,7 +200,7 @@ class LoginController extends ShieldLogins
             'password' => 'required',
         ];
     }
-	
+
 	protected function getValidationRulesUsername(): array
     {
         return setting('Validation.login') ?? [
@@ -192,7 +208,7 @@ class LoginController extends ShieldLogins
             'password' => 'required',
         ];
     }
-	
+
 	protected function getClientIpAddress()
 	  {
 		  if (!empty($_SERVER['HTTP_CLIENT_IP']))   //Checking IP From Shared Internet
@@ -210,10 +226,10 @@ class LoginController extends ShieldLogins
 
 		  return $ip;
 	  }
-	  
+
 	public function captcha($imageName)
     {
-		
+
 		$image = WRITEPATH.'/captcha/'.$imageName;
 		if(file_exists($image))
 		{
@@ -228,9 +244,30 @@ class LoginController extends ShieldLogins
 				->setContentType($mimeType)
 				->setBody($image)
 				->send();
-			   
+
 		}
-        
+
+    }
+
+    public function resource($imageName)
+    {
+
+        $image = WRITEPATH.'/resource/'.$imageName;
+        if(file_exists($image))
+        {
+            if(($image = file_get_contents(WRITEPATH.'/resource/'.$imageName)) === FALSE)
+                show_404();
+
+            // choose the right mime type
+            $mimeType = 'image/jpg';
+
+            $this->response
+                ->setStatusCode(200)
+                ->setContentType($mimeType)
+                ->setBody($image)
+                ->send();
+
+        }
 
     }
 }
