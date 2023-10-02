@@ -29,6 +29,8 @@ Import sample database provided in SQL (Project Root) Folder.
 Username - admin / admin@admin.com / 9988776655 
 Password - password
 
+open http://localhost/admin
+
 ## Server Requirements
 
 PHP version 7.4 or higher is required, with the following extensions installed:
