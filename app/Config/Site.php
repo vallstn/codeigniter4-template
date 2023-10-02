@@ -22,7 +22,7 @@ class Site extends BonfireSite
      *
      * The name that should be displayed for the site.
      */
-    public $siteName = 'Learn2Code';
+    public $siteName = 'Bonfire';
 
     /**
      * --------------------------------------------------------------------------

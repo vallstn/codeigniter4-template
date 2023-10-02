@@ -51,15 +51,56 @@ class Users extends BonfireUsers
 
     /**
      * --------------------------------------------------------------------------
+     * Avatar Upload directory
+     * --------------------------------------------------------------------------
+     * relative to FCPATH and base_url
+     */
+
+    public $avatarDirectory = 'uploads/avatars';
+
+    /**
+     * --------------------------------------------------------------------------
+     * Uploaded Avatar Image Manipulation
+     * --------------------------------------------------------------------------
+     *
+     * Should uploaded avatar be resized? (bool)
+     * If so, what is the maximum size (vertical or horizontal, whichever
+     * bigger), in px? (int)
+     * $avatarResizeFloor is the minimum size of an avatar (set to 32 as required by
+     * toolbar avatar size)
+     */
+    public $avatarResize = false;
+    public $avatarSize = 140;
+    public $avatarResizeFloor = 32;
+
+    /**
+     * --------------------------------------------------------------------------
      * Additional User Fields
      * --------------------------------------------------------------------------
      * Validation rules used when saving a user.
      */
     public $validation = [
-        'email'      => 'required|valid_email|unique_email[{id}]',
-        'username'   => 'required|string|is_unique[users.username,id,{id}]',
-        'first_name' => 'permit_empty|string|min_length[3]',
-        'last_name'  => 'permit_empty|string|min_length[3]',
+        'id' => [
+            // Needed for the id in email test;
+            // see https://codeigniter4.github.io/userguide/installation/upgrade_435.html
+            'rules' => 'permit_empty|is_natural_no_zero',
+        ],
+        'email' => [
+            'label'  => 'Email',
+            'rules'  => 'required|valid_email|unique_email[{id}]',
+            'errors' => [
+                'unique_email' => 'This email is already in use. Could belong to a current or a deleted user.',
+            ],
+        ],
+        'username' => [
+            'label' => 'Username', 'rules' => 'required|string|is_unique[users.username,id,{id}]',
+        ],
+        'first_name' => [
+            'label' => 'First Name', 'rules' => 'permit_empty|string|min_length[3]',
+        ],
+        'last_name' => [
+            'label' => 'Last Name', 'rules' => 'permit_empty|string|min_length[3]',
+        ],
     ];
 
     /**

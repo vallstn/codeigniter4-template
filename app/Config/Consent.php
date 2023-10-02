@@ -9,7 +9,7 @@
  * the LICENSE file that was distributed with this source code.
  */
 
-namespace Config\Consent;
+namespace Config;
 
 use Bonfire\Consent\Config\Consent as BonfireConsent;
 

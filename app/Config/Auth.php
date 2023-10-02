@@ -2,8 +2,12 @@
 
 namespace Config;
 
+use Bonfire\Users\Models\UserModel;
+use CodeIgniter\Shield\Authentication\Actions\ActionInterface;
+use CodeIgniter\Shield\Authentication\AuthenticatorInterface;
 use CodeIgniter\Shield\Authentication\Authenticators\AccessTokens;
 use CodeIgniter\Shield\Authentication\Authenticators\Session;
+use CodeIgniter\Shield\Authentication\Passwords\ValidatorInterface;
 use CodeIgniter\Shield\Config\Auth as ShieldAuth;
 
 class Auth extends ShieldAuth
@@ -15,19 +19,19 @@ class Auth extends ShieldAuth
      */
     public array $views = [
         'layout'                      => 'master',
-        'email_layout'                => '\App\Views\email.php',
-        'login'                       => '\App\Views\Auth\login',
-        'register'                    => '\App\Views\Auth\register',
-        'forgotPassword'              => '\App\Views\forgot_password',
-        'resetPassword'               => '\App\Views\reset_password',
-        'action_email_2fa'            => '\App\Views\email_2fa_show',
-        'action_email_2fa_verify'     => '\App\Views\email_2fa_verify',
-        'action_email_2fa_email'      => '\App\Views\email_2fa_email',
-        'action_email_activate_email' => '\App\Views\email_activate_email',
-        'action_email_activate_show'  => '\App\Views\email_activate_show',
-        'magic-link-login'            => '\App\Views\Auth\magic_link_form',
-        'magic-link-message'          => '\App\Views\Auth\magic_link_message',
-        'magic-link-email'            => '\App\Views\Auth\magic_link_email',
+        'email_layout'                => 'App\Views\bonfire\email',
+        'login'                       => 'App\Views\bonfire\Auth\login',
+        'register'                    => 'App\Views\bonfire\Auth\register',
+        'forgotPassword'              => 'App\Views\shield\forgot_password',
+        'resetPassword'               => 'App\Views\shield\reset_password',
+        'action_email_2fa'            => 'App\Views\shield\email_2fa_show',
+        'action_email_2fa_verify'     => 'App\Views\shield\email_2fa_verify',
+        'action_email_2fa_email'      => 'App\Views\shield\Email\email_2fa_email',
+        'action_email_activate_show'  => 'App\Views\bonfire\Auth\email_activate_show',
+        'action_email_activate_email' => 'App\Views\shield\Email\email_activate_email',
+        'magic-link-login'            => 'App\Views\bonfire\Auth\magic_link_form',
+        'magic-link-message'          => 'App\Views\bonfire\Auth\magic_link_message',
+        'magic-link-email'            => 'App\Views\bonfire\Auth\magic_link_email',
     ];
 
     /**
@@ -35,9 +39,8 @@ class Auth extends ShieldAuth
      * Redirect urLs
      * --------------------------------------------------------------------
      * The default URL that a user will be redirected to after
-     * various auth actions. If you need more flexibility you
-     * should extend the appropriate controller and overrider the
-     * `getRedirect()` methods to apply any logic you may need.
+     * various auth actions. If you need more flexibility you can
+     * override the `getUrl()` method to apply any logic you may need.
      */
     public array $redirects = [
         'register' => '/',
@@ -52,13 +55,21 @@ class Auth extends ShieldAuth
      * Specifies the class that represents an action to take after
      * the user logs in or registers a new account at the site.
      *
+     * You must register actions in the order of the actions to be performed.
+     *
      * Available actions with Shield:
-     * - login:    Shield\Authentication\Actions\Email2FA
-     * - register: Shield\Authentication\Actions\EmailActivate
+     * - register: 'CodeIgniter\Shield\Authentication\Actions\EmailActivator'
+     * (replaced with 'Bonfire\Auth\Actions\EmailActivator' in Bonfire)
+     * - login:    'CodeIgniter\Shield\Authentication\Actions\Email2FA'
+     *
+     * These values should be left unchanged in configuration file; they will
+     * be configured in the Admin panel of website and stored in database
+     * 
+     * @var array<string, class-string<ActionInterface>|null>
      */
     public array $actions = [
-        'login'    => null,
         'register' => null,
+        'login'    => null,
     ];
 
     /**
@@ -68,7 +79,9 @@ class Auth extends ShieldAuth
      * The available authentication systems, listed
      * with alias and class name. These can be referenced
      * by alias in the auth helper:
-     *      auth('api')->attempt($credentials);
+     *      auth('tokens')->attempt($credentials);
+     *
+     * @var array<string, class-string<AuthenticatorInterface>>
      */
     public array $authenticators = [
         'tokens'  => AccessTokens::class,
@@ -100,7 +113,7 @@ class Auth extends ShieldAuth
      * --------------------------------------------------------------------
      * Default Authenticator
      * --------------------------------------------------------------------
-     * The authentication handler to use when none is specified.
+     * The Authenticator to use when none is specified.
      * Uses the $key from the $authenticators array above.
      */
     public string $defaultAuthenticator = 'session';
@@ -109,14 +122,25 @@ class Auth extends ShieldAuth
      * --------------------------------------------------------------------
      * Authentication Chain
      * --------------------------------------------------------------------
-     * The authentication handlers to test logged in status against
-     * when using the 'chain' filter. Each handler listed will be checked.
+     * The Authenticators to test logged in status against
+     * when using the 'chain' filter. Each Authenticator listed will be checked.
      * If no match is found, then the next in the chain will be checked.
+     *
+     * @var string[]
+     * @phpstan-var list<string>
      */
     public array $authenticationChain = [
         'session',
         'tokens',
     ];
+
+    /**
+     * --------------------------------------------------------------------
+     * Allow Registration
+     * --------------------------------------------------------------------
+     * Determines whether users can register for the site.
+     */
+    public bool $allowRegistration = true;
 
     /**
      * --------------------------------------------------------------------
@@ -126,14 +150,6 @@ class Auth extends ShieldAuth
      * logged in user on every page request.
      */
     public bool $recordActiveDate = true;
-
-    /**
-     * --------------------------------------------------------------------
-     * Allow Registration
-     * --------------------------------------------------------------------
-     * Determines whether users can register for the site.
-     */
-    public bool $allowRegistration = true;
 
     /**
      * --------------------------------------------------------------------
@@ -152,26 +168,85 @@ class Auth extends ShieldAuth
      * Magic Link Lifetime
      * --------------------------------------------------------------------
      * Specifies the amount of time, in seconds, that a magic link is valid.
+     * You can use Time Constants or any desired number.
      */
-    public int $magicLinkLifetime = 1 * HOUR;
+    public int $magicLinkLifetime = HOUR;
 
     /**
      * --------------------------------------------------------------------
-     * Session Handler Configuration
+     * Session Authenticator Configuration
      * --------------------------------------------------------------------
-     * These settings only apply if you are using the Session Handler
+     * These settings only apply if you are using the Session Authenticator
      * for authentication.
      *
-     * - field                  The name of the key the logged in user is stored in session
+     * - field                  The name of the key the current user info is stored in session
      * - allowRemembering       Does the system allow use of "remember-me"
      * - rememberCookieName     The name of the cookie to use for "remember-me"
      * - rememberLength         The length of time, in seconds, to remember a user.
+     *
+     * @var array<string, bool|int|string>
      */
     public array $sessionConfig = [
         'field'              => 'logged_in',
-        'allowRemembering'   => false,
+        'allowRemembering'   => true,
         'rememberCookieName' => 'remember',
         'rememberLength'     => 30 * DAY,
+    ];
+	
+	/**
+     * --------------------------------------------------------------------
+     * The validation rules for username
+     * --------------------------------------------------------------------
+     *
+     * Do not use string rules like `required|valid_email`.
+     *
+     * @var array<string, array<int, string>|string>
+     */
+    public array $usernameValidationRules = [
+        'label' => 'Auth.username',
+        'rules' => [
+            'required',
+            'max_length[30]',
+            'min_length[3]',
+            'regex_match[/\A[a-zA-Z0-9\.]+\z/]',
+        ],
+    ];
+	
+	/**
+     * --------------------------------------------------------------------
+     * The validation rules for phone
+     * --------------------------------------------------------------------
+     *
+     * Do not use string rules like `required|valid_email`.
+     *
+     * @var array<string, array<int, string>|string>
+     */
+    public array $phoneValidationRules = [
+        'label' => 'Auth.phone',
+        'rules' => [
+            'required',
+            'max_length[15]',
+            'min_length[10]',
+            'numeric',
+        ],
+    ];
+
+    /**
+     * --------------------------------------------------------------------
+     * The validation rules for email
+     * --------------------------------------------------------------------
+     *
+     * Do not use string rules like `required|valid_email`.
+     *
+     * @var array<string, array<int, string>|string>
+     */
+    public array $emailValidationRules = [
+        'label' => 'Auth.email',
+        'rules' => [
+            'required',
+            'max_length[254]',
+            'valid_email',
+        ],
     ];
 
     /**
@@ -190,16 +265,15 @@ class Auth extends ShieldAuth
      * The PasswordValidator class runs the password through all of these
      * classes, each getting the opportunity to pass/fail the password.
      * You can add custom classes as long as they adhere to the
-     * Password\ValidatorInterface.
+     * CodeIgniter\Shield\Authentication\Passwords\ValidatorInterface.
      *
-     * @var class-string[]
-     * @phpstan-ignore-next-line
+     * @var class-string<ValidatorInterface>[]
      */
     public array $passwordValidators = [
         'CodeIgniter\Shield\Authentication\Passwords\CompositionValidator',
         'CodeIgniter\Shield\Authentication\Passwords\NothingPersonalValidator',
         'CodeIgniter\Shield\Authentication\Passwords\DictionaryValidator',
-        //'CodeIgniter\Shield\Authentication\Passwords\PwnedValidator',
+        // 'CodeIgniter\Shield\Authentication\Passwords\PwnedValidator',
     ];
 
     /**
@@ -211,6 +285,7 @@ class Auth extends ShieldAuth
     public array $validFields = [
         'email',
         'username',
+		'phone',
     ];
 
     /**
@@ -315,7 +390,6 @@ class Auth extends ShieldAuth
      * OTHER SETTINGS
      * ////////////////////////////////////////////////////////////////////
      */
-
     /**
      * --------------------------------------------------------------------
      * User Provider
@@ -327,7 +401,6 @@ class Auth extends ShieldAuth
      * CodeIgniter\Shield\Models\UserModel.
      *
      * @var class-string<UserModel>
-     * @phpstan-ignore-next-line
      */
     public string $userProvider = 'App\Models\UserModel';
 
@@ -372,4 +445,5 @@ class Auth extends ShieldAuth
             ? $url
             : rtrim(site_url($url), '/ ');
     }
+		
 }

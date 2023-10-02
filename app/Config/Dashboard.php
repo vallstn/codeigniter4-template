@@ -1,6 +1,6 @@
 <?php
 
-namespace Config\Dashboard;
+namespace Config;
 
 use Bonfire\Dashboard\Config\Dashboard as BonfireDashboard;
 

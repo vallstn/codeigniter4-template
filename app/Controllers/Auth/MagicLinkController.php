@@ -3,9 +3,9 @@
 namespace App\Controllers\Auth;
 
 use Bonfire\View\Themeable;
-use CodeIgniter\Shield\Controllers\MagicLinkController as ShieldMagicLinkControllers;
+use CodeIgniter\Shield\Controllers\MagicLinkController as ShieldMagicLinkController;
 
-class MagicLinkController extends ShieldMagicLinkControllers
+class MagicLinkController extends ShieldMagicLinkController
 {
     use Themeable;
 

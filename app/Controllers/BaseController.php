@@ -2,8 +2,6 @@
 
 namespace App\Controllers;
 
-use Bonfire\View\Themeable;
-
 use CodeIgniter\Controller;
 use CodeIgniter\HTTP\CLIRequest;
 use CodeIgniter\HTTP\IncomingRequest;
@@ -23,8 +21,6 @@ use Psr\Log\LoggerInterface;
  */
 abstract class BaseController extends Controller
 {
-    use Themeable;
-
     /**
      * Instance of the main Request object.
      *
@@ -42,13 +38,21 @@ abstract class BaseController extends Controller
     protected $helpers = [];
 
     /**
-     * Constructor.
+     * Be sure to declare properties for any property fetch you initialized.
+     * The creation of dynamic property is deprecated in PHP 8.2.
+     */
+    // protected $session;
+
+    /**
+     * @return void
      */
     public function initController(RequestInterface $request, ResponseInterface $response, LoggerInterface $logger)
-    {        
-        $this->helpers = array_merge($this->helpers, ['alerts', 'assets', 'auth', 'consent', 'setting']);
-
+    {
         // Do Not Edit This Line
         parent::initController($request, $response, $logger);
+
+        // Preload any models, libraries, etc, here.
+
+        // E.g.: $this->session = \Config\Services::session();
     }
 }

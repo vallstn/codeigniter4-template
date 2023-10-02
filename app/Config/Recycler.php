@@ -9,7 +9,7 @@
  * the LICENSE file that was distributed with this source code.
  */
 
-namespace Config\Recycler;
+namespace Config;
 
 use Bonfire\Recycler\Config\Recycler as BonfireRecycler;
 

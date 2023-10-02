@@ -1,12 +1,13 @@
 <!doctype html>
-<html lang="en"><head>
+<html lang="<?= service('request')->getLocale() ?>">
+<head>
 	<?= $viewMeta->render('meta') ?>
 
     <?= $viewMeta->render('title') ?>
 
-    <?= asset_link('other/bs5/css/bootstrap.css', 'css') ?>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
     <?= asset_link('auth/css/auth.css', 'css') ?>
-    <?= asset_link('other/font-awesome/css/all.css', 'css') ?>
+    <?= asset_link('other/components/font-awesome/css/all.css', 'css') ?>
     <?= $this->renderSection('styles') ?>
     <?= $viewMeta->render('style') ?>
 </head>

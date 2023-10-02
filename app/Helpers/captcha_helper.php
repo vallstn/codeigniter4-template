@@ -1,85 +1,9 @@
 <?php
 
 declare(strict_types=1);
-
-use SimpleCaptcha\Builder;
-use SimpleCaptcha\Helpers\Dir;
-use SimpleCaptcha\Helpers\F;
-use SimpleCaptcha\Helpers\Mime;	
-
-	/**
-     * Create CAPTCHA
-     *
-     * @param   array<string, string|int>|string $data     Data for the CAPTCHA
-     * @param   string                           $imgPath  Path to create the image in (deprecated)
-     * @param   string                           $imgUrl   URL to the CAPTCHA image folder (deprecated)
-     * @param   string                           $fontPath Server path to font (deprecated)
-     *
-     * @return  array<string, mixed>
-     *
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    function createCaptcha(
-        $data = '',
-        string $imgPath = '',
-        string $imgUrl = '',
-        string $fontPath = ''
-    ): array {		
-        $now = microtime(true);
-        $imgFilename = $now . '.png';
-
-        if (isset($data['img_path'])) {
-            $imgPath = $data['img_path'];
-        }
-
-        if (isset($data['img_url']) && is_string($data['img_url'])) {
-            $imgUrl = $data['img_url'];
-        }
-
-        $word = $data['word'] ?? null;
-
-        assert(is_string($word) || ($word === null));
-
-        $imgTag = createImageTag($data, $imgUrl, $imgFilename);
-
-        $builder = new Builder($word);		
-        $builder->build();
-        $builder->save($imgPath . $imgFilename);
-
-        return [
-            'word' => $word ?? $builder->phrase,
-            'time' => $now,
-            'image' => $imgTag,
-            'filename' => $imgFilename,
-        ];
-    }
-
-    /**
-     * @param array<string, string|int>|string $data
-     */
-    function createImageTag($data, string $imgUrl, string $imgFilename): string
-    {
-        $imgId = $data['img_id'] ?? '';
-        $imgSrc = rtrim($imgUrl, '/') . '/' . $imgFilename;
-        $imgWidth = $data['img_width'] ?? 150;
-        $imgHeight = $data['img_height'] ?? 30;
-        $imgAlt = $data['img_alt'] ?? 'captcha';
-
-        return '<img ' . ($imgId === '' ? '' : 'id="' . $imgId . '"')
-            . ' src="' . $imgSrc . '" style="width: ' . $imgWidth
-            . 'px; height: ' . $imgHeight . 'px; border: 0;" alt="'
-            . $imgAlt . '" />';
-    }
-	
-	# Render captcha image (using correct header)
-	function sendImageHeader($data, string $imgUrl, string $imgFilename): string
-    {
-		header('Content-type: ' . Mime::fromExtension('jpg'));
-		Builder::create()->build()->output();
-	}
 	
 /**
- * CodeIgniter CAPTCHA Helper
+ * CodeIgniter CAPTCHA Helper  - https://github.com/kenjis/ci3-like-captcha
  *
  * @link		https://codeigniter.com/userguide3/helpers/captcha_helper.html
  */
@@ -97,27 +21,10 @@ if ( ! function_exists('create_captcha'))
 	 * @param	string	$font_path	Server path to font (deprecated)
 	 * @return	string
 	 */
-	function create_captcha($data = '', $img_path = '', $img_url = '', $font_path = '')
-	{
-		$defaults = array(
-			'word'		=> '',
-			'img_path'	=> '',
-			'img_url'	=> '',
-			'img_width'	=> '150',
-			'img_height'	=> '30',
-			'font_path'	=> '',
-			'expiration'	=> 7200,
-			'word_length'	=> 4,
-			'font_size'	=> 16,
-			'img_id'	=> '',
-			'pool'		=> '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
-			'colors'	=> array(
-				'background'	=> array(255,255,255),
-				'border'	=> array(153,102,102),
-				'text'		=> array(204,153,153),
-				'grid'		=> array(255,182,182)
-			)
-		);
+	function create_captcha($data = '')
+	{	
+		
+		$defaults = setting('Captcha.defaults');
 
 		foreach ($defaults as $key => $val)
 		{

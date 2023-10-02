@@ -2,9 +2,14 @@
 
 ## Intro?
 
-This repo contains the start-up template based on codeigniter-4, Bonfire etc
+This repo contains the start-up template based on 
+codeigniter-4, 
+Bonfire  - https://github.com/lonnieezell/Bonfire2
+Simple Catcha - https://github.com/kenjis/ci3-like-captcha
+Password Encryption / Decrption - https://github.com/brainfoolong/cryptojs-aes-php
+Tabler Theme - https://tabler.io/
+etc
 
-Demo : (http://learn2code.in).
 
 ## Installation & updates
 
@@ -21,7 +26,7 @@ and any database settings.
 Import sample database provided in SQL (Project Root) Folder.
 
 ##
-Username - admin / admin@admin.com
+Username - admin / admin@admin.com / 9988776655 
 Password - password
 
 ## Server Requirements
